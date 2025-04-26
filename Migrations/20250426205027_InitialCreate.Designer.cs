@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgriGreen.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417145729_AzureMigration")]
-    partial class AzureMigration
+    [Migration("20250426205027_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -38,6 +38,7 @@ builder.Services.AddAuthentication()
 
 // Add Identity services
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddTransient<IEmailSender, MailjetEmailSender>();
 
@@ -64,5 +65,13 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages(); // Needed for Identity pages
+using (var scope = app.Services.CreateScope())
+{
+    var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    foreach (var role in new[] { "Farmer", "Employee" })
+        if (!await roleMgr.RoleExistsAsync(role))
+            await roleMgr.CreateAsync(new IdentityRole(role));
+}
+
 
 app.Run();
