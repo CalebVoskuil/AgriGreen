@@ -8,38 +8,81 @@
 
 <h4>Product</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductionDate" class="control-label"></label>
-                <input asp-for="ProductionDate" class="form-control" />
-                <span asp-validation-for="ProductionDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FarmerId" class="control-label"></label>
-                <select asp-for="FarmerId" class ="form-control" asp-items="ViewBag.FarmerId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+@if(ViewData["FarmerInfo"] != null)
+{
+    <div class="alert alert-info">
+        @ViewData["FarmerInfo"]
+    </div>
+}
+
+@if(ViewData["FarmerDebug"] != null)
+{
+    <div class="alert alert-warning">
+        <strong>Debug Info:</strong> @ViewData["FarmerDebug"]
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-agrigreen">
+                <h5 class="m-0">Product Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    
+                    <input type="hidden" asp-for="Id" />
+                    
+                    @if (User.IsInRole("Farmer"))
+                    {
+                        <input type="hidden" asp-for="FarmerId" />
+                        <div class="form-group">
+                            <p class="text-info">FarmerId being used: @Model.FarmerId</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group mb-3">
+                            <label asp-for="FarmerId" class="form-label"></label>
+                            <select asp-for="FarmerId" class="form-select" asp-items="ViewBag.FarmerId">
+                                <option value="">-- Select Farmer --</option>
+                            </select>
+                            <span asp-validation-for="FarmerId" class="text-danger"></span>
+                        </div>
+                    }
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Category" class="form-label"></label>
+                        <input asp-for="Category" class="form-control" required />
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="ProductionDate" class="form-label"></label>
+                        <input asp-for="ProductionDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="ProductionDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4 d-flex">
+                        <button type="submit" class="btn btn-agrigreen me-2">
+                            <i class="bi bi-check-circle"></i> Create
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-agrigreen">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

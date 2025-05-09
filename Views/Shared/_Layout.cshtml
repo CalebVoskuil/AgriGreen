@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AgriGreen.styles.css" asp-append-version="true" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AgriGreen</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-tree text-success"></i> AgriGreen
+                </a>
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -24,20 +28,28 @@
                     @* Left-side nav links *@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link agrigreen-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link agrigreen-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="bi bi-shield-check"></i> Privacy
+                            </a>
                         </li>
 
                         @* Farmer-only links *@
                         @if (User.IsInRole("Farmer"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">My Products</a>
+                                <a class="nav-link agrigreen-link" asp-controller="Products" asp-action="Index">
+                                    <i class="bi bi-box"></i> My Products
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Products" asp-action="Create">Add Product</a>
+                                <a class="nav-link agrigreen-link" asp-controller="Products" asp-action="Create">
+                                    <i class="bi bi-plus-circle"></i> Add Product
+                                </a>
                             </li>
                         }
 
@@ -45,10 +57,19 @@
                         @if (User.IsInRole("Employee"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Farmers" asp-action="Index">All Farmers</a>
+                                <a class="nav-link agrigreen-link" asp-controller="Products" asp-action="Index">
+                                    <i class="bi bi-grid"></i> All Products
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Farmers" asp-action="Create">Add Farmer</a>
+                                <a class="nav-link agrigreen-link" asp-controller="Farmers" asp-action="Index">
+                                    <i class="bi bi-people"></i> All Farmers
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link agrigreen-link" asp-controller="Farmers" asp-action="Create">
+                                    <i class="bi bi-person-plus"></i> Add Farmer
+                                </a>
                             </li>
                         }
                     </ul>
@@ -70,7 +91,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - AgriGreen - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - AgriGreen - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="agrigreen-link">Privacy</a>
         </div>
     </footer>
 

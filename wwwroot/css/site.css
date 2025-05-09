@@ -20,3 +20,79 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Custom AgriGreen styles */
+:root {
+  --agrigreen-light: #8BC34A;  /* Light green */
+  --agrigreen-dark: #689F38;   /* Darker green for hover */
+  --agrigreen-accent: #4CAF50; /* Medium green */
+}
+
+/* Primary button style */
+.btn-agrigreen {
+  background-color: var(--agrigreen-light);
+  border-color: var(--agrigreen-light);
+  color: white;
+}
+
+.btn-agrigreen:hover, 
+.btn-agrigreen:focus, 
+.btn-agrigreen:active {
+  background-color: var(--agrigreen-dark);
+  border-color: var(--agrigreen-dark);
+  color: white;
+}
+
+/* Outline button style */
+.btn-outline-agrigreen {
+  color: var(--agrigreen-light);
+  border-color: var(--agrigreen-light);
+  background-color: transparent;
+}
+
+.btn-outline-agrigreen:hover, 
+.btn-outline-agrigreen:focus, 
+.btn-outline-agrigreen:active {
+  background-color: var(--agrigreen-light);
+  border-color: var(--agrigreen-light);
+  color: white;
+}
+
+/* Navbar custom styling */
+.navbar {
+  background-color: #f8f9fa !important;
+  border-bottom: 3px solid var(--agrigreen-light) !important;
+}
+
+.nav-link.agrigreen-link {
+  color: var(--agrigreen-dark) !important;
+  font-weight: 500;
+}
+
+.nav-link.agrigreen-link:hover {
+  color: var(--agrigreen-light) !important;
+}
+
+/* Custom card headers */
+.card-header.bg-agrigreen {
+  background-color: var(--agrigreen-light) !important;
+  color: white;
+}
+
+/* Custom table styling */
+.table-agrigreen thead {
+  background-color: var(--agrigreen-light);
+  color: white;
+}
+
+/* Link styling */
+a.agrigreen-link {
+  color: var(--agrigreen-dark);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a.agrigreen-link:hover {
+  color: var(--agrigreen-light);
+  text-decoration: underline;
+}

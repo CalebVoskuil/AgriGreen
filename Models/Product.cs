@@ -11,9 +11,10 @@ namespace AgriGreen.Models
         [Required, StringLength(100)]
         public string Name { get; set; }
 
-        [StringLength(50)]
+        [Required, StringLength(50)]
         public string Category { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Production Date")]
         public DateTime ProductionDate { get; set; }
@@ -22,7 +23,7 @@ namespace AgriGreen.Models
         [Required]
         public int FarmerId { get; set; }
 
-        // Navigation property
-        public Farmer Farmer { get; set; }
+        // Navigation property - made nullable to avoid validation issues
+        public Farmer? Farmer { get; set; }
     }
 }
