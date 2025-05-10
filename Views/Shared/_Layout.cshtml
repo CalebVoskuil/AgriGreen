@@ -32,11 +32,11 @@
                                 <i class="bi bi-house"></i> Home
                             </a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link agrigreen-link" asp-area="" asp-controller="Home" asp-action="Privacy">
                                 <i class="bi bi-shield-check"></i> Privacy
                             </a>
-                        </li>
+                        </li> *@
 
                         @* Farmer-only links *@
                         @if (User.IsInRole("Farmer"))
@@ -74,7 +74,7 @@
                         }
                     </ul>
 
-                    @* Right-side login/logout *@
+                    @* Profile icon dropdown *@
                     <ul class="navbar-nav">
                         <partial name="_LoginPartial" />
                     </ul>
@@ -84,16 +84,25 @@
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 flex-grow-1">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @* <footer class="footer">
         <div class="container">
-            &copy; 2025 - AgriGreen - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="agrigreen-link">Privacy</a>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 - AgriGreen</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="agrigreen-link">
+                        <i class="bi bi-shield-check me-1"></i>Privacy
+                    </a>
+                </div>
+            </div>
         </div>
-    </footer>
+    </footer> *@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

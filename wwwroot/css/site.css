@@ -1,3 +1,10 @@
+html, body {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
 html {
   font-size: 14px;
 }
@@ -12,20 +19,26 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+body {
+  margin-bottom: 100px; /* Increased bottom margin to make room for the footer */
+  padding-bottom: 20px; /* Added padding for better spacing */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--agrigreen-beige);
 }
 
-body {
-  margin-bottom: 60px;
+main {
+  flex: 1 0 auto; /* Takes up all available space, pushing footer down */
 }
 
 /* Custom AgriGreen styles */
 :root {
-  --agrigreen-light: #8BC34A;  /* Light green */
-  --agrigreen-dark: #689F38;   /* Darker green for hover */
-  --agrigreen-accent: #4CAF50; /* Medium green */
+  --agrigreen-light: #B19470;  /* Warm tan */
+  --agrigreen-dark: #61574A;   /* Dark brown */
+  --agrigreen-accent: #82735C; /* Medium earthy brown */
+  --agrigreen-beige: #F3EEE4;  /* Lighter cream beige for background */
+  --agrigreen-olive: #6C7C59;  /* Subtle olive accent - for occasional use */
 }
 
 /* Primary button style */
@@ -58,6 +71,35 @@ body {
   color: white;
 }
 
+/* Secondary olive button */
+.btn-olive {
+  background-color: var(--agrigreen-olive);
+  border-color: var(--agrigreen-olive);
+  color: white;
+}
+
+.btn-olive:hover, 
+.btn-olive:focus, 
+.btn-olive:active {
+  background-color: #5a6849; /* Darker olive */
+  border-color: #5a6849;
+  color: white;
+}
+
+.btn-outline-olive {
+  color: var(--agrigreen-olive);
+  border-color: var(--agrigreen-olive);
+  background-color: transparent;
+}
+
+.btn-outline-olive:hover, 
+.btn-outline-olive:focus, 
+.btn-outline-olive:active {
+  background-color: var(--agrigreen-olive);
+  border-color: var(--agrigreen-olive);
+  color: white;
+}
+
 /* Navbar custom styling */
 .navbar {
   background-color: #f8f9fa !important;
@@ -79,10 +121,35 @@ body {
   color: white;
 }
 
+/* Add a secondary header style with olive accent */
+.card-header.bg-olive {
+  background-color: var(--agrigreen-olive) !important;
+  color: white;
+}
+
 /* Custom table styling */
 .table-agrigreen thead {
-  background-color: var(--agrigreen-light);
-  color: white;
+  background-color: rgba(177, 148, 112, 0.2);
+  color: var(--agrigreen-dark);
+  font-weight: 600;
+  border-bottom: 2px solid var(--agrigreen-light);
+}
+
+.table-agrigreen thead th {
+  padding: 12px 15px;
+}
+
+.table-agrigreen tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table-agrigreen tbody tr:hover {
+  background-color: rgba(139, 195, 74, 0.05);
+}
+
+.table-agrigreen tbody td {
+  padding: 12px 15px;
+  vertical-align: middle;
 }
 
 /* Link styling */
@@ -95,4 +162,172 @@ a.agrigreen-link {
 a.agrigreen-link:hover {
   color: var(--agrigreen-light);
   text-decoration: underline;
+}
+
+/* Profile dropdown styling */
+.nav-item.dropdown .dropdown-toggle::after {
+  display: none; /* Hide the dropdown arrow */
+}
+
+.nav-item.dropdown .bi-person-circle {
+  color: var(--agrigreen-dark);
+  font-size: 1.8rem; /* Increased from 1.4rem */
+  transition: color 0.2s ease;
+}
+
+.nav-item.dropdown:hover .bi-person-circle,
+.nav-item.dropdown .dropdown-toggle:focus .bi-person-circle {
+  color: var(--agrigreen-light);
+}
+
+.dropdown-menu {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+  padding: 0.5rem 0;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover, 
+.dropdown-item:focus {
+  background-color: rgba(177, 148, 112, 0.1);
+  color: var(--agrigreen-dark);
+}
+
+.dropdown-item i {
+  color: var(--agrigreen-dark);
+}
+
+/* Account management styling */
+.manage-nav-link {
+  color: var(--agrigreen-dark) !important;
+  border-radius: 0 !important;
+  border-left: 3px solid transparent;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.manage-nav-link:hover {
+  background-color: rgba(177, 148, 112, 0.1);
+  border-left-color: var(--agrigreen-light);
+}
+
+.manage-nav-link.active {
+  background-color: rgba(177, 148, 112, 0.2) !important;
+  color: var(--agrigreen-dark) !important;
+  border-left-color: var(--agrigreen-dark) !important;
+  font-weight: 600;
+}
+
+.manage-nav-link i {
+  color: var(--agrigreen-dark);
+}
+
+/* Feature cards hover effects */
+.card.h-100.border-0.shadow-sm {
+  transition: all 0.3s ease;
+  position: relative;
+  top: 0;
+  overflow: hidden;
+}
+
+.card.h-100.border-0.shadow-sm:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(97, 87, 74, 0.15) !important;
+  border-bottom: 3px solid var(--agrigreen-light) !important;
+}
+
+.card.h-100.border-0.shadow-sm::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to bottom, rgba(177, 148, 112, 0.1), transparent);
+  transition: height 0.3s ease;
+  z-index: 0;
+}
+
+.card.h-100.border-0.shadow-sm:hover::before {
+  height: 100%;
+}
+
+.card.h-100.border-0.shadow-sm .card-body {
+  position: relative;
+  z-index: 1;
+}
+
+.card.h-100.border-0.shadow-sm:hover h4 {
+  color: var(--agrigreen-dark);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.card.h-100.border-0.shadow-sm h4 {
+  transition: all 0.3s ease;
+}
+
+.card.h-100.border-0.shadow-sm ul li {
+  transition: all 0.3s ease;
+  position: relative;
+  padding-left: 5px;
+}
+
+.card.h-100.border-0.shadow-sm:hover ul li {
+  transform: translateX(5px);
+  color: #555 !important;
+}
+
+.card.h-100.border-0.shadow-sm:hover ul li:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.card.h-100.border-0.shadow-sm:hover ul li:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.card.h-100.border-0.shadow-sm:hover ul li:nth-child(3) {
+  transition-delay: 0.3s;
+}
+
+/* Text color */
+.text-agrigreen {
+  color: var(--agrigreen-dark) !important;
+}
+
+.bg-agrigreen-light {
+  background-color: rgba(139, 195, 74, 0.1) !important;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 0.5rem;
+}
+
+.alert-info {
+  border-left: 4px solid var(--agrigreen-light) !important;
+}
+
+/* Add an olive accent class for occasional use */
+.text-olive {
+  color: var(--agrigreen-olive) !important;
+}
+
+.bg-olive {
+  background-color: var(--agrigreen-olive) !important;
+  color: white;
+}
+
+.footer {
+  position: relative; /* Changed from absolute to relative */
+  margin-top: 50px; /* Added top margin for spacing */
+  padding: 20px 0;
+  width: 100%;
+  border-top: 1px solid #dee2e6;
+  background-color: var(--agrigreen-beige);
 }

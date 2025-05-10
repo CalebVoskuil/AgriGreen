@@ -1,8 +1,164 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 text-white">
+                    <h1 class="display-3 fw-bold">AgriGreen</h1>
+                    <p class="lead">Connecting farmers and businesses for a sustainable agricultural future</p>
+                    <div class="mt-4">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @if (User.IsInRole("Farmer"))
+                            {
+                                <a asp-controller="Products" asp-action="Create" class="btn btn-olive btn-lg me-2">
+                                    <i class="bi bi-plus-circle"></i> Add Your Product
+                                </a>
+                            }
+                            else if (User.IsInRole("Employee"))
+                            {
+                                <a asp-controller="Products" asp-action="Index" class="btn btn-olive btn-lg me-2">
+                                    <i class="bi bi-grid"></i> Browse Products
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-olive btn-lg me-2">
+                                <i class="bi bi-person-plus"></i> Join Today
+                            </a>
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Features Section -->
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Why Choose AgriGreen?</h2>
+        <p class="lead text-muted">Our platform makes agricultural product management simple and efficient</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-olive text-white mb-3 mx-auto" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-person-badge fs-3"></i>
+                    </div>
+                    <h4>For Farmers</h4>
+                    <p class="text-muted">Easily manage and showcase your agricultural products to potential buyers.</p>
+                    <ul class="text-start text-muted">
+                        <li>Track your product inventory</li>
+                        <li>Organize by categories</li>
+                        <li>Reach wider markets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-olive text-white mb-3 mx-auto" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-building fs-3"></i>
+                    </div>
+                    <h4>For Businesses</h4>
+                    <p class="text-muted">Discover and source high-quality agricultural products from verified farmers.</p>
+                    <ul class="text-start text-muted">
+                        <li>Search by product category</li>
+                        <li>Filter by production date</li>
+                        <li>Connect directly with farmers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-olive text-white mb-3 mx-auto" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-leaf fs-3"></i>
+                    </div>
+                    <h4>Sustainable Focus</h4>
+                    <p class="text-muted">Supporting environmentally friendly agricultural practices and products.</p>
+                    <ul class="text-start text-muted">
+                        <li>Promote local production</li>
+                        <li>Reduce supply chain waste</li>
+                        <li>Support ecological farming</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-light py-5 mt-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h3 class="mb-3">Ready to get started with AgriGreen?</h3>
+                <p class="text-muted mb-0">Join our community of farmers and businesses today.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-olive btn-lg">
+                    <i class="bi bi-person-plus"></i> Register Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add this CSS to your page -->
+<style>
+    .hero-section {
+        position: relative;
+        height: 500px;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        margin-bottom: 3rem;
+        overflow: hidden;
+    }
+    
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80');
+        background-size: cover;
+        background-position: center;
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+</style>

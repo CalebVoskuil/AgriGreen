@@ -29,19 +29,21 @@
                         @Html.DisplayNameFor(m => m.Input.RememberMe)
                     </label>
                 </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                <div class="mb-3">
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-agrigreen">
+                        <i class="bi bi-box-arrow-in-right"></i> Log in
+                    </button>
                 </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
+                <div class="d-grid gap-2">
+                    <a id="forgot-password" asp-page="./ForgotPassword" class="btn btn-outline-agrigreen mb-2">
+                        <i class="bi bi-question-circle"></i> Forgot your password?
+                    </a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-agrigreen mb-2">
+                        <i class="bi bi-person-plus"></i> Register as a new user
+                    </a>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="btn btn-outline-agrigreen">
+                        <i class="bi bi-envelope"></i> Resend email confirmation
+                    </a>
                 </div>
             </form>
         </section>
@@ -55,7 +57,7 @@
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="agrigreen-link">article
                             about setting up this ASP.NET application to support logging in via external services</a>.
                         </p>
                     </div>
@@ -67,7 +69,9 @@
                             <p>
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-agrigreen me-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                        <i class="bi bi-@(provider.DisplayName.ToLower())"></i> @provider.DisplayName
+                                    </button>
                                 }
                             </p>
                         </div>

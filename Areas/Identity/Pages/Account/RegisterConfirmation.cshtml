@@ -4,20 +4,44 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink == false)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card mt-4">
+            <div class="card-header bg-agrigreen">
+                <h4 class="m-0 text-white">@ViewData["Title"]</h4>
+            </div>
+            <div class="card-body">
+                @if (@Model.DisplayConfirmAccountLink == false)
+                {
+                    <div class="alert alert-info mb-4">
+                        <p>
+                            This app does not currently have a real email sender registered.
+                            See <a href="https://aka.ms/aspaccountconf" class="agrigreen-link">these docs</a> for how to configure a real email sender.
+                        </p>
+                        <p class="mb-0">
+                            Normally this would be emailed:
+                        </p>
+                    </div>
+                    <div class="d-grid">
+                        <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="btn btn-agrigreen">
+                            <i class="bi bi-check-circle"></i> Confirm your account
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success">
+                        <i class="bi bi-envelope-check"></i> Please check your email to confirm your account.
+                    </div>
+                }
+                
+                <div class="d-grid mt-4">
+                    <a asp-page="./Login" class="btn btn-outline-agrigreen">
+                        <i class="bi bi-box-arrow-in-right"></i> Return to login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 

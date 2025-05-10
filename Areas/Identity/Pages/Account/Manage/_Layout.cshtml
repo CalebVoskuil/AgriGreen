@@ -9,17 +9,27 @@
     }
 }
 
-<h1>Manage your account</h1>
-
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-agrigreen">
+            <h3 class="text-white m-0">Manage Your Account</h3>
         </div>
-        <div class="col-md-9">
-            @RenderBody()
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-header bg-agrigreen">
+                            <h5 class="text-white m-0">Settings</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <partial name="_ManageNav" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    @RenderBody()
+                </div>
+            </div>
         </div>
     </div>
 </div>
