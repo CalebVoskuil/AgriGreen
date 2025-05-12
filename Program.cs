@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using AgriGreen.Services;
+using AgriGreen.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,32 +83,209 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-// Initialize roles asynchronously
-await InitializeRolesAsync(app);
-
-await app.RunAsync();
-
-// Separate method for role initialization
-async Task InitializeRolesAsync(WebApplication app)
+// Initialize roles and seed data
+using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
     try
     {
-        using var scope = app.Services.CreateScope();
-        var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+
+        // Ensure database is created
+        context.Database.EnsureCreated();
         
-        foreach (var role in new[] { "Farmer", "Employee" })
+        // Create roles
+        string[] roles = { "Farmer", "Employee" };
+        foreach (var role in roles)
         {
-            if (!await roleMgr.RoleExistsAsync(role))
+            if (!await roleManager.RoleExistsAsync(role))
             {
-                await roleMgr.CreateAsync(new IdentityRole(role));
+                await roleManager.CreateAsync(new IdentityRole(role));
+                logger.LogInformation($"Created role: {role}");
             }
+        }
+
+        // Employee users
+        var employeeEmails = new[] 
+        { 
+            "sarah.johnson@agrigreen.com",
+            "michael.smith@agrigreen.com",
+            "jessica.williams@agrigreen.com"
+        };
+
+        var employeeUsers = new List<IdentityUser>();
+        foreach (var email in employeeEmails)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new IdentityUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(user, "Employee123!");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Employee");
+                    logger.LogInformation($"Created employee user: {email}");
+                }
+            }
+            employeeUsers.Add(user);
+        }
+
+        // Seed Employees
+        if (!context.Employees.Any())
+        {
+            var employees = new List<Employee>
+            {
+                new Employee { Name = "Sarah Johnson", UserId = employeeUsers[0].Id },
+                new Employee { Name = "Michael Smith", UserId = employeeUsers[1].Id },
+                new Employee { Name = "Jessica Williams", UserId = employeeUsers[2].Id }
+            };
+
+            await context.Employees.AddRangeAsync(employees);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Created employee records");
+        }
+
+        // Farmer users
+        var farmerEmails = new[] 
+        { 
+            "john.doe@farm.com",
+            "emily.wilson@greenfarms.com",
+            "robert.brown@organicvalley.com",
+            "lisa.martinez@sunrisefarms.com",
+            "david.taylor@naturegrowers.com"
+        };
+
+        var farmerUsers = new List<IdentityUser>();
+        foreach (var email in farmerEmails)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new IdentityUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(user, "Farmer123!");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Farmer");
+                    logger.LogInformation($"Created farmer user: {email}");
+                }
+            }
+            farmerUsers.Add(user);
+        }
+
+        // Seed Farmers
+        var farmers = await context.Farmers.ToListAsync();
+        if (!farmers.Any())
+        {
+            farmers = new List<Farmer>
+            {
+                new Farmer { Name = "John Doe's Farm", UserId = farmerUsers[0].Id },
+                new Farmer { Name = "Green Valley Organics", UserId = farmerUsers[1].Id },
+                new Farmer { Name = "Brown Family Farms", UserId = farmerUsers[2].Id },
+                new Farmer { Name = "Sunrise Produce", UserId = farmerUsers[3].Id },
+                new Farmer { Name = "Nature's Best Growers", UserId = farmerUsers[4].Id }
+            };
+
+            await context.Farmers.AddRangeAsync(farmers);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Created farmer records");
+            farmers = await context.Farmers.ToListAsync();
+        }
+
+        // Seed Products
+        if (!context.Products.Any())
+        {
+            var rnd = new Random();
+            var categories = new[] { "Vegetables", "Fruits", "Dairy", "Grains", "Herbs", "Meat", "Eggs" };
+            
+            var products = new List<Product>();
+
+            foreach (var farmer in farmers)
+            {
+                var vegetableNames = new[] { "Tomatoes", "Carrots", "Lettuce", "Broccoli", "Spinach", "Kale", "Peppers", "Onions", "Zucchini", "Cucumbers" };
+                var fruitNames = new[] { "Apples", "Strawberries", "Blueberries", "Cherries", "Peaches", "Pears", "Watermelon", "Cantaloupe", "Grapes", "Raspberries" };
+                var dairyNames = new[] { "Milk", "Cheese", "Butter", "Yogurt", "Cream", "Cottage Cheese" };
+                var grainNames = new[] { "Wheat", "Corn", "Barley", "Oats", "Rice", "Quinoa", "Rye" };
+                var herbNames = new[] { "Basil", "Mint", "Rosemary", "Thyme", "Oregano", "Sage", "Parsley", "Cilantro" };
+                var meatNames = new[] { "Beef", "Pork", "Lamb", "Chicken", "Turkey" };
+                var eggNames = new[] { "Chicken Eggs", "Duck Eggs", "Quail Eggs" };
+
+                // Create 5 products per farmer
+                for (int i = 0; i < 5; i++)
+                {
+                    var categoryIndex = rnd.Next(categories.Length);
+                    var category = categories[categoryIndex];
+                    string productName;
+
+                    // Select appropriate product name based on category
+                    switch (category)
+                    {
+                        case "Vegetables":
+                            productName = vegetableNames[rnd.Next(vegetableNames.Length)];
+                            break;
+                        case "Fruits":
+                            productName = fruitNames[rnd.Next(fruitNames.Length)];
+                            break;
+                        case "Dairy":
+                            productName = dairyNames[rnd.Next(dairyNames.Length)];
+                            break;
+                        case "Grains":
+                            productName = grainNames[rnd.Next(grainNames.Length)];
+                            break;
+                        case "Herbs":
+                            productName = herbNames[rnd.Next(herbNames.Length)];
+                            break;
+                        case "Meat":
+                            productName = meatNames[rnd.Next(meatNames.Length)];
+                            break;
+                        case "Eggs":
+                            productName = eggNames[rnd.Next(eggNames.Length)];
+                            break;
+                        default:
+                            productName = "Unknown Product";
+                            break;
+                    }
+
+                    // Generate a random date within the last 6 months
+                    var daysAgo = rnd.Next(1, 180);
+                    var productionDate = DateTime.Now.AddDays(-daysAgo);
+
+                    products.Add(new Product
+                    {
+                        Name = productName,
+                        Category = category,
+                        ProductionDate = productionDate,
+                        FarmerId = farmer.Id
+                    });
+                    
+                    logger.LogInformation($"Created product: {productName} for farmer {farmer.Name}");
+                }
+            }
+
+            await context.Products.AddRangeAsync(products);
+            await context.SaveChangesAsync();
+            logger.LogInformation($"Created {products.Count} product records");
         }
     }
     catch (Exception ex)
     {
-        var logger = app.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while initializing roles");
-        // Continue app startup even if role initialization fails
-        // Roles can be created manually if needed
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database");
     }
 }
+
+await app.RunAsync();

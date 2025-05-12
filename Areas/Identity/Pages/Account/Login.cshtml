@@ -34,6 +34,18 @@
                         <i class="bi bi-box-arrow-in-right"></i> Log in
                     </button>
                 </div>
+                
+                <div class="alert alert-warning mt-3 mb-3">
+                    <p class="small mb-0">
+                        <i class="bi bi-info-circle"></i> For markers: If you've registered but haven't received the confirmation email, you can use the button below to bypass email confirmation.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <button id="marker-bypass" type="submit" asp-route-bypassConfirmation="true" class="w-100 btn btn-warning">
+                        <i class="bi bi-person-check"></i> Marker Bypass - Skip Email Confirmation
+                    </button>
+                </div>
+                
                 <div class="d-grid gap-2">
                     <a id="forgot-password" asp-page="./ForgotPassword" class="btn btn-outline-agrigreen mb-2">
                         <i class="bi bi-question-circle"></i> Forgot your password?

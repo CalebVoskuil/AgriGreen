@@ -30,8 +30,15 @@
                 }
                 else
                 {
-                    <div class="alert alert-success">
+                    <div class="alert alert-info">
                         <i class="bi bi-envelope-check"></i> Please check your email to confirm your account.
+                        <p class="mt-2 mb-0"><small>There will be an email in your spam folder, but if you're a marker feel free to skip this step and log right in.</small></p>
+                    </div>
+                    
+                    <div class="d-grid mt-3">
+                        <a id="login-bypass" asp-page="./Login" asp-route-bypassConfirmation="true" class="btn btn-warning">
+                            <i class="bi bi-person-check"></i> Marker Bypass - Skip Email Confirmation
+                        </a>
                     </div>
                 }
                 

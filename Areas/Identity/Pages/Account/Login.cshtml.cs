@@ -20,11 +20,13 @@ namespace AgriGreen.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -101,7 +103,7 @@ namespace AgriGreen.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null, bool bypassConfirmation = false)
         {
             returnUrl ??= Url.Content("~/");
 
@@ -112,6 +114,24 @@ namespace AgriGreen.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                
+                // If login failed but it's just due to email confirmation, and bypass is requested
+                if (!result.Succeeded && bypassConfirmation && result.IsNotAllowed)
+                {
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user != null)
+                    {
+                        var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+                        if (!isEmailConfirmed)
+                        {
+                            _logger.LogInformation("Marker bypass: Allowing login without email confirmation.");
+                            await _userManager.UpdateSecurityStampAsync(user);
+                            await _signInManager.SignInAsync(user, Input.RememberMe);
+                            return LocalRedirect(returnUrl);
+                        }
+                    }
+                }
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
