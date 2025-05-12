@@ -5,34 +5,45 @@
 }
 
 <div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-agrigreen">
-            <h3 class="text-white m-0">Create Farmer</h3>
-        </div>
-        <div class="card-body">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                
-                <div class="form-floating mb-3">
-                    <input asp-for="Name" class="form-control" placeholder="Farmer name" />
-                    <label asp-for="Name"></label>
-                    <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card fade-in">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-plus me-2"></i>
+                        <h3 class="mb-0">Create New Farmer</h3>
+                    </div>
                 </div>
-                
-                <div class="form-floating mb-3">
-                    <select asp-for="UserId" class="form-select" asp-items="ViewBag.UserId"></select>
-                    <label asp-for="UserId"></label>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="form-floating mb-4">
+                            <input asp-for="Name" class="form-control" placeholder="Farmer name" required />
+                            <label asp-for="Name"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-floating mb-4">
+                            <select asp-for="UserId" class="form-select" asp-items="ViewBag.UserId">
+                                <option value="">-- Select User Account --</option>
+                            </select>
+                            <label asp-for="UserId">User Account</label>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                            <div class="form-text">Associate this farmer with a user account</div>
+                        </div>
+                        
+                        <div class="d-flex mt-5">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-check-circle me-2"></i>Create Farmer
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to List
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="d-flex mt-4">
-                    <button type="submit" class="btn btn-agrigreen me-2">
-                        <i class="bi bi-save me-2"></i>Create
-                    </button>
-                    <a asp-action="Index" class="btn btn-outline-agrigreen">
-                        <i class="bi bi-arrow-left me-2"></i>Back to List
-                    </a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

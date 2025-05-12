@@ -117,7 +117,6 @@ namespace AgriGreen.Controllers
                 if (farmer != null)
                 {
                     var productViewModel = new Product { FarmerId = farmer.Id };
-                    ViewData["FarmerInfo"] = $"Creating product as farmer: {farmer.Name} (ID: {farmer.Id}, UserID: {farmer.UserId})";
                     return View(productViewModel);
                 }
                 else
