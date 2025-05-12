@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace AgriGreen.Areas.Identity.Pages.Account
 {
@@ -125,6 +126,21 @@ namespace AgriGreen.Areas.Identity.Pages.Account
                         if (!isEmailConfirmed)
                         {
                             _logger.LogInformation("Marker bypass: Allowing login without email confirmation.");
+                            
+                            // Ensure the user has a role assigned
+                            var roles = await _userManager.GetRolesAsync(user);
+                            if (roles == null || !roles.Any())
+                            {
+                                // Check if this is a user from external provider by looking for external logins
+                                var logins = await _userManager.GetLoginsAsync(user);
+                                if (logins != null && logins.Any())
+                                {
+                                    // Default to Farmer role for external providers if none is assigned
+                                    await _userManager.AddToRoleAsync(user, "Farmer");
+                                    _logger.LogInformation("Assigned default Farmer role to external login user.");
+                                }
+                            }
+                            
                             await _userManager.UpdateSecurityStampAsync(user);
                             await _signInManager.SignInAsync(user, Input.RememberMe);
                             return LocalRedirect(returnUrl);

@@ -15,8 +15,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using AgriGreen.Data;
+using AgriGreen.Models;
+using System.Collections.Generic;
 
 namespace AgriGreen.Areas.Identity.Pages.Account
 {
@@ -29,13 +33,15 @@ namespace AgriGreen.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly ApplicationDbContext _context;
 
         public ExternalLoginModel(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -43,6 +49,7 @@ namespace AgriGreen.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -72,6 +79,11 @@ namespace AgriGreen.Areas.Identity.Pages.Account
         public string ErrorMessage { get; set; }
 
         /// <summary>
+        /// Options for the "I am a" dropdown
+        /// </summary>
+        public IList<SelectListItem> RoleOptions { get; set; }
+
+        /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
@@ -84,6 +96,13 @@ namespace AgriGreen.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            /// <summary>
+            /// User role selection
+            /// </summary>
+            [Required]
+            [Display(Name = "I am a")]
+            public string Role { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -134,6 +153,14 @@ namespace AgriGreen.Areas.Identity.Pages.Account
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
+
+                // Initialize role options
+                RoleOptions = new List<SelectListItem>
+                {
+                    new SelectListItem("Farmer", "Farmer"),
+                    new SelectListItem("Employee", "Employee")
+                };
+
                 return Page();
             }
         }
@@ -163,6 +190,29 @@ namespace AgriGreen.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        // Assign role
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+
+                        // Create corresponding domain record
+                        var newUserId = await _userManager.GetUserIdAsync(user);
+                        if (Input.Role == "Farmer")
+                        {
+                            _context.Farmers.Add(new Farmer
+                            {
+                                Name = Input.Email,
+                                UserId = newUserId
+                            });
+                        }
+                        else if (Input.Role == "Employee")
+                        {
+                            _context.Employees.Add(new Employee
+                            {
+                                Name = Input.Email,
+                                UserId = newUserId
+                            });
+                        }
+                        await _context.SaveChangesAsync();
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -194,6 +244,12 @@ namespace AgriGreen.Areas.Identity.Pages.Account
 
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
+            // Re-populate role options on error
+            RoleOptions = new List<SelectListItem>
+            {
+                new SelectListItem("Farmer", "Farmer"),
+                new SelectListItem("Employee", "Employee")
+            };
             return Page();
         }
 
