@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure database context based on environment
 if (builder.Environment.IsDevelopment())
 {
+    // In development, use SQLite for lightweight local database
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), 
@@ -25,11 +26,14 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
+    // In production, use SQL Server with retry logic for cloud resilience
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection"), 
             sqlOptions => 
             {
+                // Enable retry mechanism for transient failures in cloud environments
+                // This helps handle temporary connection issues that may occur
                 sqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 3,
                     maxRetryDelay: TimeSpan.FromSeconds(10),
@@ -43,6 +47,7 @@ else
 builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
+        // Load Google OAuth credentials from configuration
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
@@ -52,6 +57,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     // Configure token providers for better cold start performance
+    // This optimizes identity token generation for faster application startup
     options.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(
         typeof(IUserTwoFactorTokenProvider<IdentityUser>)));
 })
@@ -59,6 +65,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Register email sender as singleton for connection reuse
+// Using singleton pattern ensures connection pooling and reuse across requests
 builder.Services.AddSingleton<IEmailSender, MailjetEmailSender>();
 
 builder.Services.AddControllersWithViews();
@@ -97,7 +104,8 @@ using (var scope = app.Services.CreateScope())
         // Ensure database is created
         context.Database.EnsureCreated();
         
-        // Create roles
+        // Create application roles if they don't exist
+        // This establishes the role-based security structure for the app
         string[] roles = { "Farmer", "Employee" };
         foreach (var role in roles)
         {
@@ -108,7 +116,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Employee users
+        // Set up demo employee accounts for testing and initial system setup
         var employeeEmails = new[] 
         { 
             "sarah.johnson@agrigreen.com",
@@ -122,6 +130,7 @@ using (var scope = app.Services.CreateScope())
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
             {
+                // Create identity user with pre-confirmed email for easier testing
                 user = new IdentityUser
                 {
                     UserName = email,
@@ -139,7 +148,8 @@ using (var scope = app.Services.CreateScope())
             employeeUsers.Add(user);
         }
 
-        // Seed Employees
+        // Create employee profile records linked to user accounts
+        // This maintains the relationship between identity users and domain model
         if (!context.Employees.Any())
         {
             var employees = new List<Employee>
@@ -154,7 +164,7 @@ using (var scope = app.Services.CreateScope())
             logger.LogInformation("Created employee records");
         }
 
-        // Farmer users
+        // Set up demo farmer accounts for testing and showcasing app functionality
         var farmerEmails = new[] 
         { 
             "john.doe@farm.com",
@@ -170,6 +180,7 @@ using (var scope = app.Services.CreateScope())
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
             {
+                // Create identity user with pre-confirmed email for easier testing
                 user = new IdentityUser
                 {
                     UserName = email,
@@ -187,7 +198,8 @@ using (var scope = app.Services.CreateScope())
             farmerUsers.Add(user);
         }
 
-        // Seed Farmers
+        // Create farmer profile records linked to user accounts
+        // This establishes the business entities that will own products
         var farmers = await context.Farmers.ToListAsync();
         if (!farmers.Any())
         {
@@ -206,7 +218,8 @@ using (var scope = app.Services.CreateScope())
             farmers = await context.Farmers.ToListAsync();
         }
 
-        // Seed Products
+        // Seed product data for demonstration purposes
+        // This creates a realistic dataset for the application to display
         if (!context.Products.Any())
         {
             var rnd = new Random();
@@ -224,7 +237,7 @@ using (var scope = app.Services.CreateScope())
                 var meatNames = new[] { "Beef", "Pork", "Lamb", "Chicken", "Turkey" };
                 var eggNames = new[] { "Chicken Eggs", "Duck Eggs", "Quail Eggs" };
 
-                // Create 5 products per farmer
+                // Create 5 products per farmer to generate diverse inventory
                 for (int i = 0; i < 5; i++)
                 {
                     var categoryIndex = rnd.Next(categories.Length);
@@ -232,6 +245,7 @@ using (var scope = app.Services.CreateScope())
                     string productName;
 
                     // Select appropriate product name based on category
+                    // This ensures products match their category for realistic data
                     switch (category)
                     {
                         case "Vegetables":
@@ -260,7 +274,7 @@ using (var scope = app.Services.CreateScope())
                             break;
                     }
 
-                    // Generate a random date within the last 6 months
+                    // Generate a random date within the last 6 months for realistic production dating
                     var daysAgo = rnd.Next(1, 180);
                     var productionDate = DateTime.Now.AddDays(-daysAgo);
 

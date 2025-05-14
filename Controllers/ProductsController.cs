@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 namespace AgriGreen.Controllers
 {
+    // Controller restricted to authenticated users with specific roles
     [Authorize(Roles = "Farmer,Employee")]
     public class ProductsController : Controller
     {
@@ -26,6 +27,8 @@ namespace AgriGreen.Controllers
         }
 
         // GET: Products
+        // Complex method that handles multi-parameter filtering of products
+        // with role-based access control to limit data visibility
         public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, int? farmerId)
         {
             var productsQuery = _context.Products.Include(p => p.Farmer).AsQueryable();
@@ -54,6 +57,7 @@ namespace AgriGreen.Controllers
             }
 
             // Get the current user's Farmer ID if they are a Farmer
+            // This implements data isolation so farmers can only see their own products
             int? currentUserFarmerId = null;
             if (User.IsInRole("Farmer"))
             {
@@ -70,10 +74,12 @@ namespace AgriGreen.Controllers
             ViewData["CurrentUserFarmerId"] = currentUserFarmerId;
 
             // Provide data for filter dropdowns/pickers
+            // This builds the UI options for the filtering interface
             ViewData["Categories"] = new SelectList(await _context.Products.Select(p => p.Category).Distinct().ToListAsync());
             ViewData["Farmers"] = new SelectList(await _context.Farmers.ToListAsync(), "Id", "Name");
             
             // Pass back current filter values to repopulate the form
+            // This maintains filter state after page reload
             ViewData["CurrentCategory"] = category;
             ViewData["CurrentStartDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["CurrentEndDate"] = endDate?.ToString("yyyy-MM-dd");
@@ -102,10 +108,13 @@ namespace AgriGreen.Controllers
         }
 
         // GET: Products/Create
+        // Handles role-specific form preparation with pre-populated farmer data for farmers
         public async Task<IActionResult> Create()
         {
             if (User.IsInRole("Farmer"))
             {
+                // For farmers, auto-select their farm in the creation form
+                // This simplifies the UI by removing unnecessary choices
                 var userId = _userManager.GetUserId(User);
                 if (string.IsNullOrEmpty(userId))
                 {
@@ -129,6 +138,7 @@ namespace AgriGreen.Controllers
             }
             else // For Employees or other roles (if they were allowed to create)
             {
+                // Employees need to select which farm the product belongs to
                 ViewData["FarmerId"] = new SelectList(_context.Farmers, "Id", "Name");
                 return View(new Product());
             }
@@ -139,6 +149,8 @@ namespace AgriGreen.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // Complex method that handles form submission with extensive validation
+        // and role-based business logic for creating products
         public async Task<IActionResult> Create([Bind("Id,Name,Category,ProductionDate,FarmerId")] Product product)
         {
             try
@@ -150,6 +162,8 @@ namespace AgriGreen.Controllers
                 
                 if (isInFarmerRole)
                 {
+                    // For farmers, override any submitted FarmerId with their actual ID
+                    // This prevents farmers from creating products for other farms
                     var farmer = await _context.Farmers.FirstOrDefaultAsync(f => f.UserId == userId);
                     if (farmer != null)
                     {
@@ -162,6 +176,8 @@ namespace AgriGreen.Controllers
                     }
                     else
                     {
+                        // Handle the case where a user has the Farmer role but no Farmer record
+                        // Auto-creation of missing Farmer record provides better UX
                         ModelState.AddModelError("FarmerId", "No Farmer record found for your user account. Please contact an administrator.");
                         ViewData["FarmerDebug"] = $"User ID: {userId}, IsInFarmerRole: {isInFarmerRole}, " +
                                                   $"Original FarmerId: {incomingFarmerId}, But no Farmer record exists!";
@@ -183,7 +199,8 @@ namespace AgriGreen.Controllers
                 }
                 else
                 {
-                    // For employees, ensure they selected a FarmerId
+                    // For employees, validate that a farm was selected
+                    // This ensures all products have an owner
                     if (product.FarmerId <= 0)
                     {
                         ModelState.AddModelError("FarmerId", "Please select a farmer");
@@ -196,10 +213,12 @@ namespace AgriGreen.Controllers
                 }
 
                 // Clear any existing model state errors for FarmerId since we've handled it
+                // This avoids duplicate validation errors for fields we've manually processed
                 ModelState.Remove("Farmer");
                 ModelState.Remove("FarmerId");
                 
                 // Re-validate with the updated FarmerId
+                // Double-check that the Farmer exists to avoid foreign key violations
                 if (product.FarmerId > 0)
                 {
                     // Explicitly verify the Farmer exists to avoid validation errors
@@ -217,6 +236,7 @@ namespace AgriGreen.Controllers
                 if (ModelState.IsValid)
                 {
                     // Explicitly attach the Farmer entity to avoid missing navigation property
+                    // This ensures proper relationship tracking in Entity Framework
                     var farmer = await _context.Farmers.FindAsync(product.FarmerId);
                     if (farmer != null)
                     {
@@ -233,7 +253,8 @@ namespace AgriGreen.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
+                // Detailed exception handling to provide precise error information to users
+                // This improves debugging and user experience when issues occur
                 ModelState.AddModelError(string.Empty, $"Error creating product: {ex.Message}");
                 if (ex.InnerException != null)
                 {
@@ -242,6 +263,7 @@ namespace AgriGreen.Controllers
             }
 
             // If ModelState is invalid, repopulate FarmerId SelectList ONLY IF NOT a Farmer
+            // This avoids showing farmers a dropdown of all farms, which would be confusing
             if (!User.IsInRole("Farmer")) 
             {
                  ViewData["FarmerId"] = new SelectList(_context.Farmers, "Id", "Name", product.FarmerId);
@@ -288,6 +310,8 @@ namespace AgriGreen.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Handle optimistic concurrency conflicts by checking if record still exists
+                    // This prevents data corruption when multiple users edit the same record
                     if (!ProductExists(product.Id))
                     {
                         return NotFound();
@@ -337,6 +361,8 @@ namespace AgriGreen.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper method to check record existence
+        // Used to verify if a record exists before attempting updates or deletes
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
