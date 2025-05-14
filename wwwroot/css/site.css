@@ -144,14 +144,29 @@ main {
 
 /* Custom table styling */
 .table-agrigreen thead {
-  background-color: rgba(177, 148, 112, 0.2);
-  color: var(--agrigreen-dark);
-  font-weight: 600;
-  border-bottom: 2px solid var(--agrigreen-light);
+  background: linear-gradient(135deg, var(--agrigreen-light) 0%, var(--agrigreen-accent) 100%);
+  color: white;
+  font-weight: 500;
+  border-bottom: none;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
 }
 
 .table-agrigreen thead th {
-  padding: 12px 15px;
+  padding: 1rem;
+  border-bottom: none;
+  position: relative;
+}
+
+.table-agrigreen thead th:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--agrigreen-olive);
 }
 
 .table-agrigreen tbody tr {
@@ -470,4 +485,322 @@ a.agrigreen-link:hover {
 .bg-olive {
     background-color: var(--primary) !important;
     color: white !important;
+}
+
+/* Enhanced Modern Table Styling */
+.table-agrigreen {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table-agrigreen thead {
+    background: linear-gradient(135deg, var(--agrigreen-light) 0%, var(--agrigreen-accent) 100%);
+    color: white;
+    font-weight: 500;
+    border-bottom: none;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+.table-agrigreen thead th {
+    padding: 1rem;
+    border-bottom: none;
+    position: relative;
+}
+
+.table-agrigreen thead th:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--agrigreen-olive);
+}
+
+.table-responsive {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    background-color: white;
+    border: 1px solid rgba(177, 148, 112, 0.2);
+}
+
+.table-agrigreen tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(177, 148, 112, 0.1);
+}
+
+.table-agrigreen tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-agrigreen tbody tr:hover {
+    background-color: rgba(177, 148, 112, 0.05);
+    transform: translateX(5px);
+}
+
+.table-agrigreen tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.table-agrigreen .btn-group .btn {
+    border-radius: 0.375rem !important;
+    margin-right: 0.25rem;
+    box-shadow: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.table-agrigreen .btn-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.table-agrigreen .btn-info {
+    background-color: var(--agrigreen-light);
+    border-color: var(--agrigreen-light);
+    color: white;
+}
+
+.table-agrigreen .btn-info:hover {
+    background-color: var(--agrigreen-dark);
+    border-color: var(--agrigreen-dark);
+}
+
+.table-agrigreen .btn-warning {
+    background-color: #F59E0B;
+    border-color: #F59E0B;
+    color: white;
+}
+
+.table-agrigreen .btn-warning:hover {
+    background-color: #D97706;
+    border-color: #D97706;
+}
+
+.table-agrigreen .btn-danger {
+    background-color: #EF4444;
+    border-color: #EF4444;
+    color: white;
+}
+
+.table-agrigreen .btn-danger:hover {
+    background-color: #DC2626;
+    border-color: #DC2626;
+}
+
+/* Add zebra striping for better readability */
+.table-agrigreen tbody tr:nth-of-type(odd) {
+    background-color: rgba(243, 238, 228, 0.3);
+}
+
+.table-agrigreen tbody tr:nth-of-type(odd):hover {
+    background-color: rgba(177, 148, 112, 0.05);
+}
+
+/* Add custom icon before table headings */
+.table-agrigreen thead th::before {
+    font-family: "bootstrap-icons";
+    margin-right: 0.5rem;
+    opacity: 0.8;
+}
+
+.table-agrigreen thead th:nth-child(1)::before {
+    content: "\f1f9"; /* Sort icon */
+}
+
+.table-agrigreen thead th:nth-child(2)::before {
+    content: "\f3e5"; /* Tag icon */
+}
+
+.table-agrigreen thead th:nth-child(3)::before {
+    content: "\f4b5"; /* Calendar icon */
+}
+
+.table-agrigreen thead th:nth-child(4)::before {
+    content: "\f4d9"; /* Person icon */
+}
+
+.table-agrigreen thead th:nth-child(5)::before {
+    content: "\f4a8"; /* Tools icon */
+}
+
+/* Custom Table Container Styling */
+.table-container-custom {
+    position: relative;
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(177, 148, 112, 0.2);
+    overflow: hidden;
+}
+
+.table-header-custom {
+    background-color: var(--agrigreen-beige);
+    border-bottom: 2px solid var(--agrigreen-light);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table-header-custom h4 {
+    color: var(--agrigreen-dark);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.table-header-custom h4 i {
+    color: var(--agrigreen-light);
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.table-responsive {
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+    border: none;
+}
+
+/* Custom Form Card Styling */
+.custom-form-card {
+    border: none;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(97, 87, 74, 0.12);
+    transition: all 0.3s ease;
+}
+
+.custom-form-card:hover {
+    box-shadow: 0 12px 30px rgba(97, 87, 74, 0.18);
+}
+
+.custom-form-card .card-header {
+    background: linear-gradient(135deg, var(--agrigreen-light) 0%, var(--agrigreen-accent) 100%);
+    color: white;
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+.custom-form-card .card-header h3 {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.custom-form-card .form-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.custom-form-card .card-body {
+    padding: 2rem 1.5rem;
+}
+
+.custom-form-card .form-floating {
+    margin-bottom: 1.5rem;
+}
+
+.custom-form-card .form-control,
+.custom-form-card .form-select {
+    border-color: rgba(177, 148, 112, 0.3);
+    background-color: rgba(243, 238, 228, 0.2);
+    transition: all 0.2s ease;
+}
+
+.custom-form-card .form-control:focus,
+.custom-form-card .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(177, 148, 112, 0.25);
+    border-color: var(--agrigreen-light);
+    background-color: white;
+}
+
+.custom-form-card .btn {
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+}
+
+/* Enhanced Form Controls */
+.form-control,
+.form-select {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(177, 148, 112, 0.3);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--agrigreen-light);
+    box-shadow: 0 0 0 0.25rem rgba(177, 148, 112, 0.25);
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > label {
+    padding: 1rem;
+}
+
+/* Fix any issues with the danger styling */
+.card-header.bg-danger {
+    background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%) !important;
+    color: white !important;
+}
+
+.custom-form-card .card-header.bg-danger .form-icon {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Green Button Styles */
+.btn-green {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.btn-green:hover, 
+.btn-green:focus, 
+.btn-green:active {
+    background-color: #3e8e41;
+    border-color: #3e8e41;
+    color: white;
+}
+
+.btn-outline-green {
+    color: #4CAF50;
+    border-color: #4CAF50;
+    background-color: transparent;
+}
+
+.btn-outline-green:hover, 
+.btn-outline-green:focus, 
+.btn-outline-green:active {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+/* Green card header */
+.card-header.bg-green {
+    background-color: #4CAF50 !important;
+    color: white;
 }
